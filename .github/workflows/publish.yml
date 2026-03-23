@@ -1,0 +1,27 @@
+name: 诚塬商务 AI 自动发文
+on:
+  schedule:
+    - cron: '30 11 * * *'  # 北京时间 19:30 执行
+  workflow_dispatch:      # 支持手动一键测试
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      
+      - name: 安装依赖
+        run: pip install requests python-dotenv openai
+      
+      - name: 运行 AI 自动发文
+        env:
+          WECHAT_APPID: ${{ secrets.WECHAT_APPID }}
+          WECHAT_APPSECRET: ${{ secrets.WECHAT_APPSECRET }}
+          AI_API_KEY: ${{ secrets.AI_API_KEY }}
+          AI_BASE_URL: ${{ secrets.AI_BASE_URL }}
+        run: python wechat_agent.py
